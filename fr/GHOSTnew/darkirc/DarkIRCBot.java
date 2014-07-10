@@ -24,9 +24,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
+
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+
+import org.jibble.pircbot.DccChat;
+import org.jibble.pircbot.DccFileTransfer;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 
+import fr.GHOSTnew.darkirc.utils.DccChatThread;
+import fr.GHOSTnew.darkirc.utils.ObjectDccChat;
 import fr.GHOSTnew.darkirc.utils.logs;
 
 /**
@@ -303,6 +311,34 @@ public class DarkIRCBot extends PircBot{
             }
         }
     }
+    
+    public void onIncomingFileTransfer(DccFileTransfer transfer){		
+    	int choix = JOptionPane.showConfirmDialog(null, transfer.getNick() + " veux vous envoyer " + transfer.getFile() + ", voulez vous accepter?", transfer.getNick() + " -  DCC transfer", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    	if(choix == JOptionPane.OK_OPTION){
+    		
+    	}else{
+    		transfer.close();
+    	}
+    }
+    
+    public void onIncomingChatRequest(DccChat chat){
+    	int choix = JOptionPane.showConfirmDialog(null, chat.getNick() + " veux lancer un chat DCC avec vous, voulez vous accepter?", chat.getNick() + " -  DCC Chat", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    	if(choix == JOptionPane.OK_OPTION){
+    		DarkIRC.channelsList.add("=" + chat.getNick());
+    		DarkIRC.channelsTopic.add("");
+    		DarkIRC.jTabbedPane2.addTab(chat.getNick(), new ImageIcon(this.getClass().getResource("DCC.png")), null);
+    		try {
+				chat.accept();
+				logs.makeLog("=" + chat.getNick() + ".log", "Session DCC avec " + chat.getNick() + "\n");
+				Thread t = new Thread(new DccChatThread(chat));
+				DarkIRC.DccChatList.add(new ObjectDccChat(chat,t));
+	    	    t.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    }
+    
     @Override
     protected void onServerResponse(int code, String response) {
     	if(code == 372 || code <= 5 || code == 375 || code == 376 || code ==  396) {

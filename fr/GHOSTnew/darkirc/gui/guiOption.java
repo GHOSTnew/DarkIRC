@@ -31,7 +31,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import fr.GHOSTnew.darkirc.DarkIRC;
-import fr.GHOSTnew.darkirc.utils.language;
+import fr.GHOSTnew.darkirc.utils.langage;
 
 public class guiOption extends JDialog {
 	/**
@@ -76,7 +76,7 @@ public class guiOption extends JDialog {
 	    			prop.setProperty("proxy_type", proxyTypeBox.getSelectedItem().toString());
 	    			prop.setProperty("proxy_password", new String(passwordField.getPassword()));
 	    			DarkIRC.bot.setNick(nickField.getText());
-	    			DarkIRC.messageLang = ResourceBundle.getBundle("fr.GHOSTnew.darkirc.i18n.darkirc", language.getLocale(langBox.getSelectedItem().toString()));
+	    			DarkIRC.messageLang = ResourceBundle.getBundle("fr.GHOSTnew.darkirc.i18n.darkirc", langage.getLocale(langBox.getSelectedItem().toString()));
 	    	 
 	    			// save properties to project root folder
 	    			prop.store(output, null);

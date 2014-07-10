@@ -24,6 +24,9 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
+
+import org.jibble.pircbot.DccChat;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.TrustingSSLSocketFactory;
 
@@ -201,10 +204,33 @@ public class InputParser {
             		        DarkIRC.jTextPane1.setText(DarkIRC.jTextPane1.getText() + "*" + DarkIRC.bot.getNick() + " " + msg +"\n");
             		}
             	}
+            }else if(cmd[0].equalsIgnoreCase("/dcc")){
+            	if(cmd.length > 2){
+            		if(cmd[1].equalsIgnoreCase("chat")){
+            			DccChat session = DarkIRC.bot.dccSendChatRequest(cmd[2], 120000); //120000 = 2 minutes
+            			DarkIRC.channelsList.add("=" + session.getNick());
+                		DarkIRC.channelsTopic.add("");
+                		DarkIRC.jTabbedPane2.addTab(session.getNick(), new ImageIcon(DarkIRC.class.getResource("DCC.png")), null);
+                		logs.makeLog("=" + session.getNick() + ".log", "Session DCC avec " + session.getNick() + "\n");
+						Thread t = new Thread(new DccChatThread(session));
+						DarkIRC.DccChatList.add(new ObjectDccChat(session,t));
+						t.start();
+            		}
+            	}
             }
         }else if(DarkIRC.bot.isConnected() == true && !DarkIRC.currentChan.equalsIgnoreCase(DarkIRC.channelsList.get(0)) && text != " "){
-        	DarkIRC.jTextPane1.setText(DarkIRC.jTextPane1.getText() + "<" + DarkIRC.bot.getNick() + ">:" + text + "\n");
-        	DarkIRC.bot.sendMessage(DarkIRC.currentChan, text);
+        	if(DarkIRC.jTabbedPane2.getIconAt(DarkIRC.jTabbedPane2.getSelectedIndex()) != null){
+        		String DCCCible = DarkIRC.channelsList.get(DarkIRC.jTabbedPane2.getSelectedIndex());
+        		for(int i = 0; i < DarkIRC.DccChatList.size(); i++){
+        			if(("=" + DarkIRC.DccChatList.get(i).getNick()).equalsIgnoreCase(DCCCible)){
+        				DarkIRC.jTextPane1.setText(DarkIRC.jTextPane1.getText() + "<" + DarkIRC.bot.getNick() + ">:" + text + "\n");
+        				DarkIRC.DccChatList.get(i).send(text);
+        			}
+        		}
+        	}else {
+        		DarkIRC.jTextPane1.setText(DarkIRC.jTextPane1.getText() + "<" + DarkIRC.bot.getNick() + ">:" + text + "\n");
+        		DarkIRC.bot.sendMessage(DarkIRC.currentChan, text);
+        	}
         }
 	}
 }

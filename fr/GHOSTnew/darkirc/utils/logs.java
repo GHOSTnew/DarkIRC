@@ -40,7 +40,8 @@ public class logs {
 			buff.close(); 
 			}		
 			catch (Exception e){
-			System.out.println(e.toString());
+			//System.out.println(e.toString());
+				return "";
 			}
 		return text;
 	}

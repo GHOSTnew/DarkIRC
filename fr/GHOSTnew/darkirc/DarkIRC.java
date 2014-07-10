@@ -70,6 +70,9 @@ public class DarkIRC extends javax.swing.JFrame {
     public static List<String> channelsTopic = new ArrayList<String>();
     public static DefaultListModel listModel = new DefaultListModel();
     private static DarkIRC main;
+    /*public static DccFileTransfer currentTransfer;
+    public static List<File> queulist = new ArrayList<File>();*/
+    public static List<ObjectDccChat> DccChatList = new ArrayList<ObjectDccChat>();
     public static Locale locale;
     public static ResourceBundle messageLang;
     public DarkIRC() {
@@ -406,8 +409,8 @@ public class DarkIRC extends javax.swing.JFrame {
         	logs.makeLog(currentChan + ".log", jTextPane1.getText());
         	jTextPane1.setText("");
         	topicField.setText("");
-        	currentChan = channelsList.get(jTabbedPane2.getSelectedIndex());
-        	jTextPane1.setText(logs.readLog(currentChan + ".log"));
+    		currentChan = channelsList.get(jTabbedPane2.getSelectedIndex());
+    		jTextPane1.setText(logs.readLog(currentChan + ".log"));
         	topicField.setText(channelsTopic.get(jTabbedPane2.getSelectedIndex()));
         }
         if(jTabbedPane2.getSelectedIndex() == 0){
@@ -450,7 +453,7 @@ public class DarkIRC extends javax.swing.JFrame {
 
 			// load a properties file
 			prop.load(input);
-			locale = language.getLocale(prop.getProperty("langue", "Français"));
+			locale = langage.getLocale(prop.getProperty("langue", "Français"));
 			messageLang = ResourceBundle.getBundle("fr.GHOSTnew.darkirc.i18n.darkirc", locale);
 			try {
 	            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
